@@ -1,0 +1,30 @@
+// @import 'bootstrap/scss/bootstrap';
+
+
+.navbar{
+    background-color: black !important;
+}
+
+.nav-link{
+    color: white !important;
+}
+
+#logo {
+    float: left;
+    font-size: 1.7em;
+    color: #fff;
+    letter-spacing: -1px;
+}
+
+#home-container {
+    margin-top: 25px;
+}
+
+#jumbotron {
+    margin-top: 25px;
+    background-image: asset-url('home-page-img.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
