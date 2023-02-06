@@ -5,7 +5,7 @@
     <tr>
       <th>Title</th>
       <th>Description</th>
-      <th colspan="3" style="text-align: center">Actions</th>
+      <th colspan="3">Actions</th>
     </tr>
   </thead>
 
@@ -17,7 +17,8 @@
         <td><%=link_to "show", project_path(project)%></td>
         <td><%=link_to "edit", edit_project_path(project)%></td>
         <td><%= link_to "delete", project_path(project), 
-        data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }%></td>
+          data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }%>
+        </td>
       </tr>
     <% end %>
   </tbody>

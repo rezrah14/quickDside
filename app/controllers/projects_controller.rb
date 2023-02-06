@@ -1,12 +1,8 @@
 class ProjectsController < ApplicationController
 
+  before_action :get_project, only: [:show, :edit, :update, :destroy]
+
   def show
-    id = params[:id]
-    if Project.exists?(id)
-      @project = Project.find(id)
-    else
-      @project = Project.new
-    end
   end
 
   def index
@@ -18,7 +14,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(params.require(:project).permit(:title, :description))
+    @project = Project.new(project_params(params))
     if @project.save
       flash[:notice] = "Project was created successfully."
       redirect_to @project
@@ -30,15 +26,10 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    id = params[:id]
-    if Project.exists?(id)
-      @project = Project.find(id)
-    end
   end
 
   def update
-    @project = Project.find(params[:id])
-    if @project.update(params.require(:project).permit(:title, :description))
+    if @project.update(project_params(params))
       flash[:notice] = "Project was editted successfully."
       redirect_to @project
       # ^ is the shortened version of : redirect_to project_path(@project.id)
@@ -48,12 +39,22 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    @project.destroy
+    redirect_to projects_path
+  end
+
+  private
+
+  def get_project
     id = params[:id]
     if Project.exists?(id)
       @project = Project.find(id)
-      @project.destroy
-      redirect_to projects_path
     end
   end
+
+  def project_params(params)
+    params.require(:project).permit(:title, :description)
+  end
+
 
 end

@@ -1,26 +1,5 @@
 <h1>create new project</h1>
 
-<% if @project and @project.errors.any? %> 
-  <h2>The following errors prevented the article from being saved</h2> 
-  <ul> 
-    <% @project.errors.full_messages.each do |msg| %> 
-      <li><%= msg %></li> 
-    <% end %> 
-  </ul>
-<% end %>
-
-<%= form_with scope: :project, url: projects_path, local: true do |f| %>
-  <p> 
-    <%= f.label :title %><br/> 
-    <%= f.text_field :title %>
-  </p>
-  <p>
-    <%= f.label :description %><br/> 
-    <%= f.text_area :description %> 
-  </p>
-  <p>
-    <%= f.submit %> 
-  </p>
-<% end %>
-
+<%= render 'form' %>
+<br>
 <%= link_to 'Return to projects listing', projects_path %>
