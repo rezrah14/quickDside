@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(project_params(params))
+    @project = Project.new(project_params)
     if @project.save
       flash[:notice] = "Project was created successfully."
       redirect_to @project
@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    if @project.update(project_params(params))
+    if @project.update(project_params)
       flash[:notice] = "Project was editted successfully."
       redirect_to @project
       # ^ is the shortened version of : redirect_to project_path(@project.id)
@@ -52,7 +52,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def project_params(params)
+  def project_params
     params.require(:project).permit(:title, :description)
   end
 
