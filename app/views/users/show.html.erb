@@ -7,5 +7,8 @@
   <h3 class="text-center mt-4">Projects</h3>
   <div class="container">
     <%= render 'projects/projects_table' %>
+    <div class="flickr_pagination">
+      <%= will_paginate @projects, :container => false %>
+    </div>
   </div>
 </div>

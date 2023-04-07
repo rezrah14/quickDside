@@ -1,11 +1,15 @@
 <div id="page-content">
   <h1 class="text-center mt-4">projects</h1>
   <div class="container">
+    <p>
+      <%= link_to "create a new project", new_project_path(@project), class: "btn btn-primary" %>
+    </p>
     <%= render "projects_table" %>
     <br>
-    <p>
-      <%= link_to 'create a new project', new_project_path %>
-    </p>
+    <div class="flickr_pagination">
+      <%= will_paginate @posts, :container => false %>
+    </div>
+    <br>
   </div>
 </div>
 
