@@ -1,0 +1,24 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Owner</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= link_to project.title,  project_path(project) %></td>
+        <td><%= project.description.truncate(70) %></td>
+        <td><%= project.users.first.username if  project.users.first%></td>
+        <td><%=link_to "view", project_path(project)%></td>
+        <td><%=link_to "edit", edit_project_path(project)%></td>
+        <td><%= link_to "delete", project_path(project), 
+          data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

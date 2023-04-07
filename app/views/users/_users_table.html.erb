@@ -1,0 +1,24 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>username</th>
+      <th>email</th>
+      <th>owner</th>
+      <th>admin</th>
+      <th>user</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to gravatar_for(user, size: 25), user_path(user.id) %></td>
+        <td><%= link_to user.username, user_path(user.id) %></td>
+        <td><%= user.email %></td>
+        <td>&check;</td>
+        <td>&check;</td>
+        <td>&check;</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

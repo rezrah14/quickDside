@@ -1,4 +1,10 @@
 class UsersController < ApplicationController
+
+  def show
+    @user = User.find(params[:id])
+    @projects = @user.projects
+  end
+
   def new
     @user = User.new
   end

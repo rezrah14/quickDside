@@ -3,6 +3,7 @@ class ProjectsController < ApplicationController
   before_action :get_project, only: [:show, :edit, :update, :destroy]
 
   def show
+    @users = @project.users
   end
 
   def index
