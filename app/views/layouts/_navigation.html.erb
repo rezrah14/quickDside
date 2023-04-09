@@ -7,18 +7,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <%= link_to gravatar_for(current_user, size: 25), user_path(current_user.id), class: "nav-link" %>
-          </li>
-          <li class="nav-item">
-            <%= link_to current_user.username, user_path(current_user.id), class: "nav-link" %>
-          </li>
-          <li class="nav-item">
-            <%= link_to "New Project", new_project_path, class: "nav-link"%>
-          </li>
-          <li class="nav-item">
-            <%= link_to "Project List", projects_path, class: "nav-link"%>
-          </li>
+          <% if logged_in? %>
+            <li class="nav-item">
+              <%= link_to gravatar_for(current_user, size: 25), user_path(current_user.id), class: "nav-link" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to current_user.username, user_path(current_user.id), class: "nav-link" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Project List", projects_path, class: "nav-link"%>
+            </li>
+            <li class="nav-item">
+              <%= link_to "New Project", new_project_path, class: "nav-link"%>
+            </li>
+          <% end %>
           <li class="nav-item">
               <%= link_to "About", about_path, class: "nav-link"%>
           </li>
