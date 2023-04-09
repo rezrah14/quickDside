@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
   end
 
   def index
-    @projects = Project.paginate(page: params[:page], per_page: 5)
+    @projects = current_user.projects.paginate(page: params[:page], per_page: 5)
   end
 
   def new
@@ -17,6 +17,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     if @project.save
+      @project.users << current_user
       flash[:notice] = "Project was created successfully."
       redirect_to @project
       # ^ is the shortened version of : redirect_to project_path(@project.id)
