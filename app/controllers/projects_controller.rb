@@ -1,6 +1,8 @@
 class ProjectsController < ApplicationController
 
   before_action :get_project, only: [:show, :edit, :update, :destroy]
+  before_action :require_user
+  before_action :require_same_user, only: [:edit, :update, :destroy]
 
   def show
     @users = @project.users
@@ -56,6 +58,13 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(:title, :description)
+  end
+
+  def require_same_user
+    if !@project.users.include(current_user)
+      flash[:alert] = "You can only edit or delete your own article"
+      redirect_to projects_path
+    end
   end
 
 

@@ -30,7 +30,9 @@
       Nullam non interdum purus. Pellentesque laoreet ipsum eget tellus dignissim auctor. 
       In sodales augue quis tellus pulvinar eleifend.</p>
       <br>
-      <%= link_to 'Projects listing', projects_path %> |
+      <% if logged_in? %>
+        <%= link_to 'Projects listing', projects_path %> |
+      <% end %>
       <%= link_to 'Home page', root_path %>
     </div>
 

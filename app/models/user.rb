@@ -10,4 +10,5 @@ class User < ApplicationRecord
                       length: { maximum: 105 },
                       format: { with: VALID_EMAIL_REGEX }
   has_secure_password
+  phony_normalize :phone_number, default_country_code: 'US'
 end
