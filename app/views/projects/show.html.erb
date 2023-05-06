@@ -1,6 +1,5 @@
 <div id="page-content">
   <h2 class="text-center mt-4"><%= @project.title %></h2>
-
   <div class="container">
     <div class="row justify-content-md-center">
       <div class="col-8 mt-4">
@@ -11,8 +10,15 @@
           <div class="card-body text-center">
           <h3 class="text-center mt-4">Users</h3>
             <%= render "users/users_table" %>
-            <%= link_to "Edit", edit_project_path(@project), class: "btn btn-outline-info" %>
-            <%= link_to "Delete", project_path(@project), class: "btn btn-outline-danger", data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% access_level = user_access_level(current_user, @project)%>
+            <% access_level_int = ProjectUser.access_levels.fetch(access_level, -1) %>
+            <% if access_level_int > 0 %>
+              <%= link_to "Edit", edit_project_path(@project), class: "btn btn-outline-info" %>
+              <%= link_to "Invite User", new_project_invitation_path(project_id: @project.id), class: "btn btn-outline-info" %>
+              <% if access_level == "owner" %>
+                <%= link_to "Delete", project_path(@project), class: "btn btn-outline-danger", data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+              <% end %>
+            <% end %>
           </div>
           <div class="card-footer text-muted">
             <small>Created <%= time_ago_in_words(@project.created_at) %> ago, 

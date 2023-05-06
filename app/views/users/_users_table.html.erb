@@ -4,9 +4,7 @@
       <th></th>
       <th>username</th>
       <th>email</th>
-      <th>owner</th>
-      <th>admin</th>
-      <th>user</th>
+      <th>access level</th>
     </tr>
   </thead>
   <tbody>
@@ -15,9 +13,16 @@
         <td><%= link_to gravatar_for(user, size: 25), user_path(user.id) %></td>
         <td><%= link_to user.username, user_path(user.id) %></td>
         <td><%= user.email %></td>
-        <td>&check;</td>
-        <td>&check;</td>
-        <td>&check;</td>
+        <td><%= (ProjectUser.find_by(user: user, project: @project))&.access_level %></td>
+        <td>
+          <% project_user = @project.project_users.find_by(user_id: current_user.id) %>
+          <% if current_user == @project.owner && project_user.present? && current_user != project_user.user %>
+            <%= link_to "Change Access Level", change_access_level_project_invitation_path(@project, project_user.user), method: :put %>
+            <% if project_user.access_level != 'owner' %>
+              <%= link_to "Remove User", project_project_user_path(@project, project_user.user), method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

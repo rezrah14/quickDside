@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Project Invitation</title>
+</head>
+<body>
+  <h3>You have been invited to join a project on QuickD$ide</h3>
+  
+  <p>Hello <%=@first_name %>, </p>
+  
+  <p>You have been invited by <%= @inviter.username %> to join the "<%= @project.title %>" project on QuickD$ide. To accept the invitation, click the link below:</p>
+  
+  <a href="<%= join_project_url(@project, token: @token) %>">Join project</a>
+  
+  <p>If you have any questions or concerns, please contact <%= @inviter.email %>.</p>
+  
+  <p>Thanks!</p>
+</body>
+</html>

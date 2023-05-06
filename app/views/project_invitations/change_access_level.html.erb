@@ -1,0 +1,6 @@
+<h1>Change Access Level</h1>
+
+<%= form_tag(change_access_level_project_invitation_path(@project, @project_user.user), method: :put) do %>
+  <%= select_tag :access_level, options_for_select(ProjectUser.access_levels.except(:owner).keys.map {|a| [a.capitalize, a]}, @project_user.access_level), class: "form-control" %>
+  <%= submit_tag "Change Access Level", class: "btn btn-primary" %>
+<% end %>

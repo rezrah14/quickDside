@@ -1,0 +1,18 @@
+<%= form_with(model: @user, url: project_invitation_path(token: @project_invitation.token), local: true) do |form| %>
+  <%= form.label :name %>
+  <%= form.text_field :name, required: true %>
+
+  <%= form.label :email %>
+  <%= form.text_field :email, required: true %>
+
+  <%= form.label :password %>
+  <%= form.password_field :password, required: true %>
+
+  <%= form.label :password_confirmation %>
+  <%= form.password_field :password_confirmation, required: true %>
+
+  <%= form.label :verification_code %>
+  <%= form.text_field :verification_code, required: true %>
+
+  <%= form.submit "Join Project" %>
+<% end %>

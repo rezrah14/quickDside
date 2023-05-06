@@ -1,0 +1,9 @@
+<h1>Join Project</h1>
+<p>Please enter the verification code to join the project.</p>
+<%= form_tag join_project_path, method: :get do %>
+  <div>
+    <%= label_tag :verification_code, "Verification code" %>
+    <%= text_field_tag :verification_code %>
+  </div>
+  <%= submit_tag "Join project" %>
+<% end %>

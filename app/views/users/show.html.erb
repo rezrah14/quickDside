@@ -13,7 +13,7 @@
               <span class="text-black-50">&#9742; <%= number_to_phone(@user.phone_number) %></span><span> </span>
               <br>
               <% if current_user == @user %>
-                <div><%= link_to "List of Current Projects", projects_path(@user.projects) %></div>
+                <div><%= link_to "List of Current Projects", projects_path(@user.all_projects) %></div>
                 <div><%= link_to "Create New Project", new_project_path %></div>
                 <br>
                 <div>

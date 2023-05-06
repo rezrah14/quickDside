@@ -1,15 +1,16 @@
 class ProjectsController < ApplicationController
 
   before_action :get_project, only: [:show, :edit, :update, :destroy]
-  before_action :require_user
-  before_action :require_same_user, only: [:edit, :update, :destroy]
+  # before_action :require_included_user
+  before_action :require_admin_user, only: [:edit, :update]
+  before_action :require_owner_user, only: [:destroy]
 
   def show
-    @users = @project.users
+    @users = @project.all_users
   end
 
   def index
-    @projects = current_user.projects.paginate(page: params[:page], per_page: 5)
+    @projects = current_user.all_projects.paginate(page: params[:page], per_page: 5)
   end
 
   def new
@@ -18,8 +19,10 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(project_params)
+    @project.owner = current_user
     if @project.save
-      @project.users << current_user
+      # Add the current user as an owner in the ProjectUser model
+      @project_user = ProjectUser.create(user: current_user, project: @project, access_level: ProjectUser.access_levels[:owner])
       flash[:notice] = "Project was created successfully."
       redirect_to @project
       # ^ is the shortened version of : redirect_to project_path(@project.id)
@@ -47,6 +50,15 @@ class ProjectsController < ApplicationController
     redirect_to projects_path
   end
 
+  def destroy
+    if @project.owner == current_user
+      @project.destroy
+      redirect_to projects_path
+    else
+      flash[:alert] = "You can only edit or delete your own project"
+    end
+  end
+
   private
 
   def get_project
@@ -60,12 +72,25 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(:title, :description)
   end
 
-  def require_same_user
-    if !@project.users.include(current_user)
-      flash[:alert] = "You can only edit or delete your own article"
+  def require_included_user
+    if !@project.all_users.include?(current_user)
+      flash[:alert] = "You do not have access to this project"
       redirect_to projects_path
     end
   end
 
+  def require_admin_user
+    unless @project.admins.include?(current_user) || @project.owner == current_user
+      flash[:alert] = "You need admin access to edit this project or invite new users"
+      redirect_to projects_path
+    end
+  end
+
+  def require_owner_user
+    if !@project.owner == current_user
+      flash[:alert] = "You need owner access to delete this project"
+      redirect_to projects_path
+    end
+  end
 
 end

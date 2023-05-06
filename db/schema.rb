@@ -10,12 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_10_021107) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_05_200335) do
+  create_table "project_invitations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.string "email", null: false
+    t.integer "access_level", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "inviter_id"
+    t.string "token"
+    t.string "first_name"
+    t.string "last_name"
+    t.index ["project_id"], name: "index_project_invitations_on_project_id"
+    t.index ["user_id"], name: "index_project_invitations_on_user_id"
+  end
+
+  create_table "project_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.integer "access_level", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_users_on_project_id"
+    t.index ["user_id", "project_id"], name: "index_project_users_on_user_id_and_project_id", unique: true
+    t.index ["user_id"], name: "index_project_users_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "owner_id"
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|
@@ -34,4 +61,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_10_021107) do
     t.string "phone_number"
   end
 
+  add_foreign_key "project_invitations", "projects"
+  add_foreign_key "project_invitations", "users"
+  add_foreign_key "project_users", "projects"
+  add_foreign_key "project_users", "users"
+  add_foreign_key "projects", "users", column: "owner_id"
 end

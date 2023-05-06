@@ -43,6 +43,28 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
+  def join_project_new_user
+    @project_invitation = ProjectInvitation.find_by(token: params[:token])
+    @project = @project_invitation.project
+    @user = User.new(email: @project_invitation.email)
+  end
+
+  def submit_join_project
+    @project_invitation = ProjectInvitation.find_by(token: params[:token])
+    @project = @project_invitation.project
+    @user = User.new(params.require(:user).permit(:name, :email, :password, :password_confirmation, :verification_code))
+    @user.email = @project_invitation.email
+  
+    if @user.save
+      @project.project_users.create(user: @user, access_level: @project_invitation.access_level)
+      session[:user_id] = @user.id
+      flash[:notice] = "You have successfully joined the project"
+      redirect_to project_path(@project)
+    else
+      render 'join_project_new_user'
+    end
+  end
+
   private
   def user_params
     params.require(:user).permit(:username, :email, :password, :first_name,
