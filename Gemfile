@@ -61,9 +61,7 @@ group :development, :test do
   gem "sqlite3", "~> 1.4"
 end
 
-group :development, :test do
-  gem 'dotenv-rails'
-end
+gem 'dotenv-rails'
 
 group :production do
   gem 'pg'
