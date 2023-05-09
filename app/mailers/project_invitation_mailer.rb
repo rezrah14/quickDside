@@ -8,6 +8,6 @@ class ProjectInvitationMailer < ApplicationMailer
     @invitee_email = invitation.email
     @token = token
 
-    mail(to: @invitee_email, subject: 'You have been invited to join a project on QuickD$ide', from: @inviter.email)
+    mail(to: @invitee_email, subject: 'You have been invited to join a project on QuickD$ide', from: ENV["ELASTIC_EMAIL_USERNAME"])
   end
 end
