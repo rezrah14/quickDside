@@ -53,7 +53,6 @@ class ProjectInvitationsController < ApplicationController
         flash[:alert] = "Invalid verification code"
         render :join_project and return
       end
-      debugger
       # Create new ProjectUser record
       @project_user = ProjectUser.create(user: @user, project: @project, access_level: @project_invitation.access_level)
       session[:user_id] = @user.id
