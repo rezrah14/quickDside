@@ -25,8 +25,8 @@ class ProjectInvitationsController < ApplicationController
       @invitation.send_invitation_email
       flash[:notice] = "Invitation sent!"
       # Redirect the user to a page to enter their information and join the project
-      redirect_to join_project_path(token: @invitation.token)
-      # redirect_to project_path(@project)
+       #redirect_to join_project_path(token: @invitation.token)
+      redirect_to project_path(@project)
     else
       flash.alert = "There was an error sending the invitation. Please try again."
       render 'new', status: :unprocessable_entity
