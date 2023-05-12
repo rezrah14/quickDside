@@ -109,7 +109,8 @@ Rails.application.configure do
     user_name:            'apikey',
     password:             ENV['SENDGRID_API_KEY'],
     authentication:       'plain',
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    domain:               'quickdside.com'
   }
   config.action_mailer.default_url_options = { host: 'quickdside.onrender.com' }
 end
