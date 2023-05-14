@@ -22,7 +22,7 @@
                 </div>
                 <br>
                 <div>
-                  <%= link_to "Delete Account", root_path, class: "btn btn-outline-danger", data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }  %>
+                  <%= link_to "Delete Account", user_path(@user), class: "btn btn-outline-danger", data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }  %>
                 </div>
               <%end%>
             </div>

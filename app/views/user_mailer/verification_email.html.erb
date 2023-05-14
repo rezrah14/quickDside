@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+    
+      h1 {
+        color: #333;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    
+      p {
+        color: #666;
+        margin-bottom: 10px;
+      }
+    
+      /* Add more styles as needed */
+    </style>
+  
+  </head>
+  <body>
+    <h1>Welcome to QuickD$ide!</h1>
+    <p>
+      Dear <%= @user.first_name %>,
+    </p>
+    <p>
+      Thank you for signing up! Please click the link below to verify your email address:
+    </p>
+    <p>
+      <%= link_to 'Verify Email', @verification_url %>
+    </p>
+    <p>
+      If you did not sign up for an account, you can safely ignore this email.
+    </p>
+    <p>
+      Best regards,
+      The QuickD$ide Team
+    </p>
+  </body>
+</html>

@@ -12,5 +12,9 @@ module ApplicationHelper
     project_user = ProjectUser.find_by(user: user, project: project)
     project_user&.access_level
   end
+
+  def user_verification_url(token)
+    verify_email_url(token: token)
+  end
   
 end

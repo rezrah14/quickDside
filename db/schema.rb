@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_05_200335) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_14_050846) do
   create_table "project_invitations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -59,6 +59,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_05_200335) do
     t.string "first_name"
     t.string "last_name"
     t.string "phone_number"
+    t.string "verification_token"
+    t.boolean "verified"
+    t.index ["verification_token"], name: "index_users_on_verification_token"
   end
 
   add_foreign_key "project_invitations", "projects"

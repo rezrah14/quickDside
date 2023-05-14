@@ -19,4 +19,7 @@ Rails.application.routes.draw do
   get 'logout', to: 'sessions#destroy'
 
   get 'join_project', to: 'project_invitations#join_project'
+
+  get '/verify_email/:token', to: 'users#verify_email', as: :verify_email
+
 end
