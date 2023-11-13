@@ -36,52 +36,44 @@
         </div>
       </div>
       <br>
-      <div class="form-group row">
-        <div id="dynamic-fields" class="row">
-          <label class="col-2 col-form-label text-center" id="datelabel">Date</label>
-          <label class="col-2 col-form-label text-center" id="currencyLabel">Price (US$)</label>
+      <div class="text-center">
+        <div id="dynamic-fields" class="row justify-content-center mt-3">
+          <label class="col-3 col-form-label text-center" id="datelabel">Date</label>
+          <label class="col-3 col-form-label text-center" id="currencyLabel">Price (US$)</label>
           <label class="col-1 col-form-label text-center"></label>
         </div>
       </div>
-      <div class="text-center">
-        <button type="button" onclick="addRow()" class="btn btn-success">Add Date & Price</button>
-      </div>
-      <br>
-      <br>
+
       <div class="text-center">
         <% if @component.new_record? %>
-          <button type="button" onclick="addRow()" class="btn btn-success">Append Price Profile</button>
-          <%= form.submit "Create Component", class: "btn btn-primary" %>
-        <% else %>
-          <%= form.submit "Update Component", class: "btn btn-primary" %>
+          <div id="dynamic-fields" class="row justify-content-center mt-3">
+            <button type="button" onclick="addRow()" class="btn btn-success col-2">Add Price Data</button>
+          </div>
         <% end %>
-        <%= link_to "Cancel", project_components_path(@project), class: "btn btn-secondary" %>
       </div>
-      <div class="text-center">
+      <div class="mt-3">
         <script>
           var currencyValue = "US$";
-
           // To ensure at least one row exists initially
           addRow();
 
           function addRow() {
             var newRow = document.createElement("div");
-            newRow.classList.add("row");
+            newRow.classList.add("row", "justify-content-center");
 
             newRow.innerHTML = `
-              <div class="col-2">
+              <div class="col-3 text-center">
                 <input type="date" class="form-control shadow rounded">
               </div>
-              <div class="col-2">
+              <div class="col-3 text-center">
                 <input type="text" class="form-control shadow rounded">
               </div>
-              <div class="col-1">
+              <div class="col-1 text-center">
                 <button type="button" onclick="deleteRow(this)" class="btn text-danger px-1 py-1" style="border: none;">X</button>
-              `;
+              </div>
+            `;
 
             document.getElementById("dynamic-fields").appendChild(newRow);
-            document.getElementById("datelabel").innerHTML = "Date";
-            document.getElementById("currencyLabel").innerHTML = "Price (US$)";
           }
 
           function deleteRow(button) {
@@ -94,7 +86,17 @@
             }
           }
         </script>
-      </duv>
+      </div>
+      <br>
+      <div class="text-center">
+        <% if @component.new_record? %>
+          <%= form.submit "Create Component", class: "btn btn-primary" %>
+        <% else %>
+          <%= form.submit "Update Component", class: "btn btn-primary" %>
+        <% end %>
+        <%= link_to "Cancel", project_components_path(@project), class: "btn btn-secondary" %>
+      </div>
+      <br>
     <% end %>
   </div>
 </div>
