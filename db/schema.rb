@@ -10,7 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_14_050846) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_12_180421) do
+  create_table "asset_tags", force: :cascade do |t|
+    t.integer "asset_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_asset_tags_on_asset_id"
+    t.index ["tag_id"], name: "index_asset_tags_on_tag_id"
+  end
+
+  create_table "assets", force: :cascade do |t|
+    t.string "region"
+    t.string "company_name"
+    t.integer "asset_type"
+    t.date "start_date"
+    t.date "end_date"
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["project_id"], name: "index_assets_on_project_id"
+  end
+
+  create_table "components", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "project_id", null: false
+    t.string "quantity_type"
+    t.decimal "unit_multiplier"
+    t.string "unit"
+    t.string "price_interpolation_model"
+    t.string "currency"
+  end
+
   create_table "project_invitations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -43,11 +77,39 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_14_050846) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "owner_id"
+    t.integer "length", default: 100
+    t.integer "monthly_resolution_end_year", default: 1
+    t.date "start_date"
+    t.json "time_intervals", default: []
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name"
+  end
+
+  create_table "time_series_attributes", force: :cascade do |t|
+    t.string "name"
+    t.integer "interpolation_model"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "time_series_data_points", force: :cascade do |t|
+    t.integer "time_series_attribute_id", null: false
+    t.date "date"
+    t.decimal "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["time_series_attribute_id"], name: "index_time_series_data_points_on_time_series_attribute_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -64,9 +126,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_14_050846) do
     t.index ["verification_token"], name: "index_users_on_verification_token"
   end
 
+  add_foreign_key "asset_tags", "assets"
+  add_foreign_key "asset_tags", "tags"
+  add_foreign_key "assets", "projects"
+  add_foreign_key "components", "projects"
   add_foreign_key "project_invitations", "projects"
   add_foreign_key "project_invitations", "users"
   add_foreign_key "project_users", "projects"
   add_foreign_key "project_users", "users"
   add_foreign_key "projects", "users", column: "owner_id"
+  add_foreign_key "time_series_data_points", "time_series_attributes"
 end

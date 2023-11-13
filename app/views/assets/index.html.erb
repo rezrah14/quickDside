@@ -1,0 +1,19 @@
+<div id="page-content">
+  <h1 class="text-center mt-4"><%= @project.title %>'s assets</h1>
+  <div class="container">
+    <p>
+      <%= link_to "new asset", new_project_asset_path(@project), class: "btn btn-primary" %>
+    </p>
+    <br>
+  </div>
+  <br>
+  <% if @project.assets.any? %>
+    <%= render "assets_table" %>
+    <br>
+    <div class="flickr_pagination">
+      <%= will_paginate @assets, :container => false %>
+    </div>
+    <br>
+  <%end%>
+</div>
+

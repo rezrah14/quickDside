@@ -7,6 +7,7 @@ class ProjectsController < ApplicationController
 
   def show
     @users = @project.all_users
+    @components = @project.components
   end
 
   def index
@@ -20,6 +21,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     @project.owner = current_user
+    @project.start_date = Date.parse(project_params[:start_date])
     if @project.save
       # Add the current user as an owner in the ProjectUser model
       @project_user = ProjectUser.create(user: current_user, project: @project, access_level: ProjectUser.access_levels[:owner])
@@ -69,8 +71,10 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:title, :description)
+    params.require(:project).permit(:title, :description, :start_date, :length, :monthly_resolution_end_year)
+                             .transform_values { |value| value.presence || nil }
   end
+  
 
   def require_included_user
     if !@project.all_users.include?(current_user)

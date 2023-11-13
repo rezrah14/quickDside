@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   get 'about', to: 'pages#about'
   resources :projects do
     resources :project_users, only: [:create] 
+    resources :assets, only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :components
   end
 
   resources :project_invitations do
@@ -14,6 +16,7 @@ Rails.application.routes.draw do
   get 'signup', to: 'users#new'
   # post 'users', to: 'user#create'
   resources :users, except: [:new]
+
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
   get 'logout', to: 'sessions#destroy'

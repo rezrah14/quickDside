@@ -4,16 +4,35 @@
     <div class="col-10">
       <%= form_with(model: @project, class: "shadow p-3 mb-3 bg-light rounded", local: true) do |f| %>
         <div class="form-group row">
-          <%= f.label :project, class: "col-2 col-form-label" %>
+          <%= f.label :project, class: "col-2 col-form-label text-center" %>
           <div class="col-10">
             <%= f.text_field :title, class: "form-control shadow rounded", placeholder: "Title of project" %>
           </div>
         </div>
         <br>
         <div class="form-group row ">
-          <%= f.label :description, class: "col-2 col-form-label" %>
+          <%= f.label :description, class: "col-2 col-form-label text-center" %>
           <div class="col-10"> 
             <%= f.text_area :description, rows: 10, class: "form-control shadow rounded", placeholder: "Description of project" %>
+          </div>
+        </div>
+        <br>
+        <div class="form-group row">
+          <%= f.label :start_date, class: "col-2 col-form-label text-center" %>
+          <div class="col-10"> 
+            <%= f.date_field :start_date, value: Date.current, class: "form-control shadow rounded", placeholder: "Select start date" %>
+          </div>
+        </div>
+        <br>
+        <div class="form-group row">
+          <%= f.label :length, "Length (in years)", class: "col-2 col-form-label text-center" %>
+          <div class="col-3">
+            <%= f.number_field :length, class: "form-control shadow rounded", placeholder: "Enter length" %>
+          </div>
+          <br>
+          <%= f.label :monthly_resolution_end_year, "Monthly Resolution End Year (within length)", class: "col-4 col-form-label text-center" %>
+          <div class="col-3">
+            <%= f.number_field :monthly_resolution_end_year, class: "form-control shadow rounded", placeholder: "Enter end year" %>
           </div>
         </div>
         <br>

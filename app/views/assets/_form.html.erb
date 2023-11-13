@@ -1,0 +1,50 @@
+<%= render "shared/errors", obj: @asset %>
+<div class="row justify-content-center">
+  <div class="col-10">
+    <%= form_with(model: @asset, url: project_assets_path(@project), local: true, class: "shadow p-3 mb-3 bg-light rounded") do |form| %>
+      <br>
+      <div class="form-group row">
+        <%= form.label :name, class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.text_field :name, class: "form-control shadow rounded" %>
+        </div>
+        <%= form.label :company_name, "Company", class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.text_field :company_name, class: "form-control shadow rounded" %>
+        </div>
+      </div>
+      <br>
+      <div class="form-group row">
+        <%= form.label :region, class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.text_field :region, class: "form-control shadow rounded" %>
+        </div>
+        <%= form.label :asset_type, class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.select :asset_type, options_for_select(Asset.asset_types.keys), {}, class: "form-control shadow rounded" %>
+        </div>
+      </div>
+      <br>
+      <div class="form-group row">
+        <%= form.label :start_date, class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.date_field :start_date, value: @project.start_date, class: "form-control shadow rounded" %>
+        </div>
+        <%= form.label :end_date, class: "col-2 col-form-label text-center" %>
+        <div class="col-4">
+          <%= form.date_field :end_date, value: @project.start_date + @project.length.years, class: "form-control shadow rounded" %>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="text-center">
+        <% if @asset.new_record? %>
+          <%= form.submit "Create Asset", class: "btn btn-primary" %>
+        <% else %>
+          <%= form.submit "Update Asset", class: "btn btn-primary" %>
+        <% end %>
+        <%= link_to "Cancel", project_assets_path(@project), class: "btn btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

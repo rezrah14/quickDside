@@ -4,11 +4,13 @@
     <p>
       <%= link_to "create a new project", new_project_path(@project), class: "btn btn-primary" %>
     </p>
-    <%= render "projects_table" %>
-    <br>
-    <div class="flickr_pagination">
-      <%= will_paginate @projects, :container => false %>
-    </div>
+    <% if @projects.any? %>
+      <%= render "projects_table" %>
+      <br>
+      <div class="flickr_pagination">
+        <%= will_paginate @projects, :container => false %>
+      </div>
+    <% end %>
     <br>
   </div>
 </div>
