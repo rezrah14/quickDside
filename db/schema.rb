@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_12_180421) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_18_033502) do
   create_table "asset_tags", force: :cascade do |t|
     t.integer "asset_id", null: false
     t.integer "tag_id", null: false
@@ -38,11 +38,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_12_180421) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "project_id", null: false
-    t.string "quantity_type"
-    t.decimal "unit_multiplier"
-    t.string "unit"
-    t.string "price_interpolation_model"
-    t.string "currency"
+    t.integer "quantity_type", default: 0
+    t.integer "unit_multiplier", default: 2
+    t.integer "unit", default: 0
+    t.integer "price_interpolation_model", default: 0
+    t.integer "currency", default: 0
   end
 
   create_table "project_invitations", force: :cascade do |t|
@@ -101,6 +101,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_12_180421) do
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "attributable_type", null: false
+    t.integer "attributable_id", null: false
+    t.index ["attributable_type", "attributable_id"], name: "index_time_series_attributes_on_attributable"
   end
 
   create_table "time_series_data_points", force: :cascade do |t|

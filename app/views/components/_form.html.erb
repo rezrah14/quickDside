@@ -1,100 +1,197 @@
 <%= render "shared/errors", obj: @component %>
+<% time_series_data = @component.time_series_attribute&.time_series_data_points || [] %>
 <div class="row justify-content-center">
   <div class="col-10">
-    <%= form_with(model: @component, url: project_components_path(@project), local: true, class: "shadow p-3 mb-3 bg-light rounded") do |form| %>
-      <br>
+    <%= form_with(model: [@project, @component], local: true, class: "shadow p-3 mb-3 bg-light rounded") do |form| %>
+    <br>
       <div class="form-group row">
         <%= form.label :name, class: "col-2 col-form-label text-center" %>
         <div class="col-4">
-          <%= form.text_field :name, class: "form-control shadow rounded" %>
+        <%= form.text_field :name, class: "form-control shadow rounded", readonly: readonly, style: inline_styles(readonly) %>
         </div>
         <%= form.label :quantity_type, class: "col-2 col-form-label text-center" %>
-        <div class="col-4">
-          <%= form.text_field :quantity_type, class: "form-control shadow rounded" %>
+        <div class="col-4",>
+          <%= form.select :quantity_type,
+          Component.quantity_types.keys.map { |type| [type.capitalize, type] },
+          {},
+          class: "form-control shadow rounded",
+          disabled: readonly,
+          style: inline_styles(readonly) %>
         </div>
       </div>
       <br>
       <div class="form-group row">
         <%= form.label :unit_multiplier, class: "col-2 col-form-label text-center" %>
         <div class="col-4">
-          <%= form.text_field :unit_multiplier, class: "form-control shadow rounded" %>
+          <%= form.select :unit_multiplier, Component.unit_multipliers.keys.map { |multiplier| [multiplier.to_s.humanize, multiplier] },
+          {}, class: "form-control shadow rounded",
+          disabled: readonly,
+          style: inline_styles(readonly) %>
         </div>
         <%= form.label :unit, class: "col-2 col-form-label text-center" %>
         <div class="col-4">
-          <%= form.text_field :unit, class: "form-control shadow rounded" %>
+          <%= form.select :unit, Component.units.keys.map { |unit| [unit.upcase, unit] }, 
+          {}, class: "form-control shadow rounded",
+          disabled: readonly,
+          style: inline_styles(readonly) %>
         </div>
       </div>
       <br>
       <div class="form-group row">
         <%= form.label :price_interpolation_model, class: "col-2 col-form-label text-center" %>
         <div class="col-4">
-          <%= form.text_field :price_interpolation_model, class: "form-control shadow rounded" %>
+          <%= form.select :price_interpolation_model, Component.price_interpolation_models.keys.map { |model| [model.to_s.humanize, model] }, 
+          {}, class: "form-control shadow rounded",
+          disabled: readonly,
+          style: inline_styles(readonly) %>
         </div>
         <%= form.label :currency, class: "col-2 col-form-label text-center" %>
         <div class="col-4">
-          <%= form.text_field :currency, class: "form-control shadow rounded" %>
+          <%= form.select :currency, Component.currencies.keys.map { |currency| [currency, currency] }, 
+          {}, class: "form-control shadow rounded",
+          disabled: readonly,
+          style: inline_styles(readonly) %>
         </div>
       </div>
       <br>
+      <!-- Hidden input field to store date-price-pair data -->
+      <%= form.hidden_field :date_price_pairs, id: "date_price_pairs" %>
+
+      <div id="chart-container" class="text-center col-6" style="border: 1px solid #ccc; padding: 10px; margin: 0 auto;">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+        <%= javascript_include_tag 'chartkick' %>
+      </div>
+
       <div class="text-center">
         <div id="dynamic-fields" class="row justify-content-center mt-3">
           <label class="col-3 col-form-label text-center" id="datelabel">Date</label>
-          <label class="col-3 col-form-label text-center" id="currencyLabel">Price (US$)</label>
+          <label class="col-3 col-form-label text-center" id="currencyLabel">Price (<%= @component.currency %>)</label>
           <label class="col-1 col-form-label text-center"></label>
         </div>
       </div>
 
       <div class="text-center">
-        <% if @component.new_record? %>
+        <% if @component.new_record? || !readonly%>
           <div id="dynamic-fields" class="row justify-content-center mt-3">
             <button type="button" onclick="addRow()" class="btn btn-success col-2">Add Price Data</button>
           </div>
         <% end %>
       </div>
-      <div class="mt-3">
-        <script>
-          var currencyValue = "US$";
-          // To ensure at least one row exists initially
-          addRow();
 
-          function addRow() {
-            var newRow = document.createElement("div");
-            newRow.classList.add("row", "justify-content-center");
+      <script>
+        var timeSeriesData = <%= raw time_series_data.to_json.html_safe %>;
+        var chartData = {};
+        var chart = new Chartkick.LineChart("chart-container", chartData);
 
-            newRow.innerHTML = `
-              <div class="col-3 text-center">
-                <input type="date" class="form-control shadow rounded">
-              </div>
-              <div class="col-3 text-center">
-                <input type="text" class="form-control shadow rounded">
-              </div>
-              <div class="col-1 text-center">
-                <button type="button" onclick="deleteRow(this)" class="btn text-danger px-1 py-1" style="border: none;">X</button>
-              </div>
-            `;
-
-            document.getElementById("dynamic-fields").appendChild(newRow);
-          }
-
-          function deleteRow(button) {
-            // Ensure at least one row remains before deletion
-            if (document.querySelectorAll("#dynamic-fields .row").length > 1) {
-              button.parentElement.parentElement.remove();
-            } else {
-              // You might want to show a message indicating the requirement of at least one row.
-              console.log("At least one row must exist.");
+        function populateChartData() {
+          timeSeriesData.forEach(function (dataPoint, index) {
+            if (index > -1 ) { // Skip the first row as it's the header row
+              addRow(); // Add a new row dynamically
+              var rows = document.querySelectorAll("#dynamic-fields .row");
+              var inputs = rows[index].querySelectorAll("input");
+              
+              // Populate the date and price inputs with existing data
+              inputs[0].value = dataPoint.date;
+              inputs[1].value = dataPoint.value;
             }
+          });
+          updateChart();
+        }
+        populateChartData();
+        function addRow() {
+          var dateInput = document.createElement("input");
+          dateInput.setAttribute("type", "date");
+          dateInput.classList.add("form-control", "shadow", "rounded");
+          dateInput.readOnly = <%= readonly ? 'true' : 'false' %>; 
+          dateInput.style = "<%= inline_styles(readonly) %>";
+          dateInput.addEventListener("change", updateChart);
+
+          var priceInput = document.createElement("input");
+          priceInput.setAttribute("type", "text");
+          priceInput.classList.add("form-control", "shadow", "rounded");
+          priceInput.readOnly = <%= readonly ? 'true' : 'false' %>;
+          priceInput.style = "<%= inline_styles(readonly) %>"; // Apply inline styles 
+          priceInput.addEventListener("input", updateChart);
+        
+          // Add a delete button for each row (except the first row
+          var deleteButton = document.createElement("button");
+          deleteButton.setAttribute("type", "button");
+          deleteButton.setAttribute("onclick", "deleteRow(this)");
+          deleteButton.classList.add("btn", "text-danger", "px-1", "py-1");
+          deleteButton.style.border = "none";
+          deleteButton.textContent = "X";
+
+          if (<%= readonly %>){
+            deleteButton.style.color = 'gray'; // Change text color
+            deleteButton.disabled = true; // Disable the button in readOnly mode
           }
-        </script>
-      </div>
+          else{
+            deleteButton.style.color = 'red'; // Change text color
+            deleteButton.disabled = false; // Disable the button in readOnly mode
+          }
+
+          var newRow = document.createElement("div");
+          newRow.classList.add("row", "justify-content-center", "mt-3");
+
+          var dateColumn = document.createElement("div");
+          dateColumn.classList.add("col-3", "text-center");
+          dateColumn.appendChild(dateInput);
+
+          var priceColumn = document.createElement("div");
+          priceColumn.classList.add("col-3", "text-center");
+          priceColumn.appendChild(priceInput);
+
+          var deleteColumn = document.createElement("div");
+          deleteColumn.classList.add("col-1", "text-center");
+          deleteColumn.appendChild(deleteButton);
+
+          newRow.appendChild(dateColumn);
+          newRow.appendChild(priceColumn);
+          newRow.appendChild(deleteColumn);
+
+          document.getElementById("dynamic-fields").appendChild(newRow);
+          updateChart(); // Update chart when a row is added
+        }
+
+        function deleteRow(button) {
+          if (document.querySelectorAll("#dynamic-fields .row").length > 1) {
+            button.parentElement.parentElement.remove();
+            updateChart(); // Update chart when a row is deleted
+          } else {
+            console.log("At least one row must exist.");
+          }
+        }
+
+        function updateChart() {
+          var rows = document.querySelectorAll("#dynamic-fields .row");
+          var datePricePairs = [];
+          chartData = {};
+          rows.forEach(function (row, index) {
+            var inputs = row.querySelectorAll("input");
+            var date = inputs[0].value;
+            var price = inputs[1].value;
+
+            if (date && price) {
+              chartData[date] = parseFloat(price);
+              datePricePairs.push({ date: date, price: price });
+            }
+          });
+          var hiddenInput = document.getElementById("date_price_pairs");
+          hiddenInput.value = JSON.stringify(datePricePairs);
+          chart.updateData(chartData);
+        }
+      </script>
       <br>
       <div class="text-center">
         <% if @component.new_record? %>
           <%= form.submit "Create Component", class: "btn btn-primary" %>
-        <% else %>
+        <% elsif !readonly%>
           <%= form.submit "Update Component", class: "btn btn-primary" %>
+        <% else %>
+          <%= link_to "Edit", edit_project_component_path(@project, @component), class: "btn btn-primary" %>
         <% end %>
-        <%= link_to "Cancel", project_components_path(@project), class: "btn btn-secondary" %>
+        <%= link_to "Return to Component List", project_components_path(@project), class: "btn btn-secondary" %>
       </div>
       <br>
     <% end %>

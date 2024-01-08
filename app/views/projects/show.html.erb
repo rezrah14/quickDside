@@ -99,6 +99,11 @@
               </div>
               <div class="card-body text-left">
                 <div><%= simple_format(@project.description) %></div>
+                <div class="text-center">
+                  <%= link_to "Component Definition List", project_components_path(@project), class: "btn btn-primary" %>
+                  <%= link_to "Operation Definition List", project_components_path(@project), class: "btn btn-primary" %> 
+                  <%= link_to "Tax Model Definition List", project_components_path(@project), class: "btn btn-primary" %>
+                </div>
               </div>
               <div class="card-footer text-muted">
                 <small>Created <%= time_ago_in_words(@project.created_at) %> ago, edited <%= time_ago_in_words(@project.updated_at) %> ago</small>
@@ -113,7 +118,7 @@
                   <h4 class="text-center mt-4">Asset Management</h4>
                 </div>
                 <div class="card-body text-center">
-                  <%= link_to "Create New Asset", new_project_asset_path(@project), class: "btn btn-outline-info" %>
+                  <%= link_to "Create New Asset", new_project_asset_path(@project), class: "btn btn-primary" %>
                   <br>
                   <% if @project.assets.any? %>
                     <table class="table">
@@ -166,8 +171,8 @@
                 <% access_level = user_access_level(current_user, @project) %>
                 <% access_level_int = ProjectUser.access_levels.fetch(access_level, -1) %>
                 <% if access_level_int > 0 %>
-                  <%= link_to "Edit", edit_project_path(@project), class: "btn btn-outline-info" %>
-                  <%= link_to "Invite User", new_project_invitation_path(project_id: @project.id), class: "btn btn-outline-info" %>
+                  <%= link_to "Edit", edit_project_path(@project), class: "btn btn-primary" %>
+                  <%= link_to "Invite User", new_project_invitation_path(project_id: @project.id), class: "btn btn-primary" %>
                   <% if access_level == "owner" %>
                     <%= link_to "Delete", project_path(@project), class: "btn btn-outline-danger", data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
                   <% end %>

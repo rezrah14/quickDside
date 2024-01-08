@@ -1,4 +1,7 @@
 class TimeSeriesAttribute < ApplicationRecord
+  belongs_to :attributable, polymorphic: true
+  validates :attributable_type, :attributable_id, presence: true
+
   has_many :time_series_data_points, -> { order(date: :asc) }, dependent: :destroy
 
   enum interpolation_model: {

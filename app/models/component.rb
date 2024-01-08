@@ -1,7 +1,13 @@
 class Component < ApplicationRecord
   belongs_to :project
   has_one :time_series_attribute, as: :attributable, dependent: :destroy
-  validates :name, :quantity_type, :unit_multiplier, :unit, :price_interpolation_model, :currency, presence: true
+  validates :name, :quantity_type, :unit, :unit_multiplier, :price_interpolation_model, :currency, presence: true
+
+  enum quantity_type: { mass: 0, volume: 1 }
+  enum unit: { kg: 0, lb: 1, m3: 2, ft3: 3, bbl: 4 }
+  enum unit_multiplier: { micro: 0, milli: 1, unit: 2, kilo: 3, mega: 4 }, _suffix: true, _default: :unit
+  enum currency: { USD: 0, CAD: 1, GBP: 2, Euro: 3, yen: 4, yuan: 5 }
+  enum price_interpolation_model: { stepwise: 0, linear: 1 }
 
   after_create :create_price_time_series_attribute
 
@@ -13,22 +19,15 @@ class Component < ApplicationRecord
     price_data = time_series_attribute.calculate_value(requested_date, requested_currency)
   end
 
-  def delete_price(date)
-    price_data = time_series_attribute.find_data(date)
-    price_data.destroy if price_data.present?
-  end
-
-  def edit_price(date, new_price, currency)
-    price_data = time_series_attribute.find_data(date)
-    if price_data.present?
-      price_data.update(price: new_price, currency: currency)
-    end
-  end
-
   private
 
   def create_price_time_series_attribute
-    time_series_attribute = TimeSeriesAttribute.create(name: "#{name} Price")
-    self.time_series_attribute = time_series_attribute
+    time_series_attribute = TimeSeriesAttribute.create(
+      name: "#{name} Price",
+      interpolation_model: price_interpolation_model,
+      unit: unit,
+      attributable: self  # Associate the TimeSeriesAttribute with the Component
+    )
   end
+
 end
