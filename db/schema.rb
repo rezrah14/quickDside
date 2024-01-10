@@ -79,7 +79,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_18_033502) do
     t.integer "owner_id"
     t.integer "length", default: 100
     t.integer "monthly_resolution_end_year", default: 1
-    t.date "start_date"
+    t.date "start_date", default: -> { "CURRENT_DATE" }
+    t.date "time_interval"
     t.json "time_intervals", default: []
   end
 

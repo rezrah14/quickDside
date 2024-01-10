@@ -69,7 +69,6 @@ class ComponentsController < ApplicationController
 
   def component_params
     params.require(:component).permit(:name, :quantity_type, :unit, :unit_multiplier, :price_interpolation_model, :currency, :date_price_pairs)
-    # Add other permitted parameters as required
   end
 
 
