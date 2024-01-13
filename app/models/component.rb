@@ -2,6 +2,7 @@ class Component < ApplicationRecord
   belongs_to :project
   has_one :time_series_attribute, as: :attributable, dependent: :destroy
   validates :name, :quantity_type, :unit, :unit_multiplier, :price_interpolation_model, :currency, presence: true
+  validates :project_id, presence: true
 
   enum quantity_type: { mass: 0, volume: 1 }
   enum unit: { kg: 0, lb: 1, m3: 2, ft3: 3, bbl: 4 }
@@ -22,11 +23,10 @@ class Component < ApplicationRecord
   private
 
   def create_price_time_series_attribute
-    time_series_attribute = TimeSeriesAttribute.create(
+    self.time_series_attribute = TimeSeriesAttribute.create(
       name: "#{name} Price",
       interpolation_model: price_interpolation_model,
-      unit: unit,
-      attributable: self  # Associate the TimeSeriesAttribute with the Component
+      unit: unit
     )
   end
 

@@ -22,7 +22,7 @@ class ComponentsController < ApplicationController
       process_date_price_data(@component, params[:component][:date_price_pairs])
       redirect_to project_component_path(@project, @component)
     else
-      # If save fails, re-render the new form to display errors
+      Rails.logger.error("Error creating component: #{@component.errors.full_messages}")
       render :new
     end
   end
