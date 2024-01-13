@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_18_033502) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_17_183313) do
   create_table "asset_tags", force: :cascade do |t|
     t.integer "asset_id", null: false
     t.integer "tag_id", null: false

@@ -8,10 +8,10 @@ class AddFieldsToComponents < ActiveRecord::Migration[7.0]
     remove_index :components, name: "index_components_on_project_id"
 
     # Add new columns
-    add_column :components, :quantity_type, :string
-    add_column :components, :unit_multiplier, :decimal
-    add_column :components, :unit, :string
-    add_column :components, :price_interpolation_model, :string
-    add_column :components, :currency, :string
+    add_column :components, :quantity_type, :integer, default: 0
+    add_column :components, :unit_multiplier, :integer, default: 2
+    add_column :components, :unit, :integer, default: 0
+    add_column :components, :price_interpolation_model, :integer, default: 0
+    add_column :components, :currency, :integer, default: 0
   end
 end
